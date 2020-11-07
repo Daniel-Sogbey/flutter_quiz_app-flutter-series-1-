@@ -16,7 +16,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   int _questionIndex = 0;
 
-  List<Map<String, Object>> questions = [
+  final List<Map<String, Object>> questions = const [
     {
       'questionText': 'What\'s your favorite color?',
       'answers': ['Black', 'Red', 'Green', 'White'],
@@ -35,7 +35,9 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _questionIndex += 1;
     });
-    print(_questionIndex);
+    if (_questionIndex < questions.length) {
+      print(_questionIndex);
+    }
   }
 
   @override
@@ -45,18 +47,21 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: Text('Quiz App'),
         ),
-        body: Column(
-          children: <Widget>[
-            Question(
-              questionText: questions[_questionIndex]['questionText'],
-            ),
-            ...(questions[_questionIndex]['answers'] as List<String>)
-                .map((answer) {
-              return Answer(
-                  answerText: answer, answerQuestionHandler: _answerQuestion);
-            }).toList()
-          ],
-        ),
+        body: _questionIndex < questions.length
+            ? Column(
+                children: <Widget>[
+                  Question(
+                    questionText: questions[_questionIndex]['questionText'],
+                  ),
+                  ...(questions[_questionIndex]['answers'] as List<String>)
+                      .map((answer) {
+                    return Answer(
+                        answerText: answer,
+                        answerQuestionHandler: _answerQuestion);
+                  }).toList()
+                ],
+              )
+            : Text('Questions exhausted'),
       ),
     );
   }
